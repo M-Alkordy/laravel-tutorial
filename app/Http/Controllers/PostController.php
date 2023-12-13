@@ -12,7 +12,10 @@ class PostController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Post::class);
+
         $posts = Post::all();
+
         return view('posts.index', compact('posts'));
     }
 
@@ -21,6 +24,9 @@ class PostController extends Controller
      */
     public function create()
     {
+
+        $this->authorize('create', Post::class);
+
         return view('posts.create');
     }
 
@@ -35,27 +41,28 @@ class PostController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $post = new Post();
-        $post->title = $request->input('title');
-        $post->content = $request->input('content');
+        $data = $request->only(['title', 'content']);
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images'), $imageName);
-            $post->image = $imageName;
+            $data['image'] = $imageName;
         }
 
-        $post->save();
+
+        auth()->user()->posts()->create($data);
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Post $post)
     {
+        $this->authorize('view', $post);
         return view('posts.show', compact('post'));
     }
 
@@ -64,6 +71,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        $this->authorize('update', $post);
+
         return view('posts.edit', compact('post'));
     }
 
@@ -98,6 +107,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully');
