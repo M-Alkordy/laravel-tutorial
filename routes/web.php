@@ -25,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['can:view,post'])->get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
-    Route::middleware(['can:create,App\Models\Post'])->get('posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::middleware(['can:create,App\Models\Post'])->get('post/create', [PostController::class, 'create'])->name('posts.create');
     Route::middleware(['can:create,App\Models\Post'])->post('posts', [PostController::class, 'store'])->name('posts.store');
 
     Route::middleware(['can:update,post'])->get('posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
