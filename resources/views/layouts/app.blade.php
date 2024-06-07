@@ -25,10 +25,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('posts.create') }}">Create Post</a>
                     </li>
+                    @auth
+                        @can('manageUsers', App\Models\User::class)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.users.index') }}">Manage Users</a>
+                            </li>
+                        @endcan
+                    @endauth
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     @auth
-                        <!-- If user is authenticated, show logout link -->
                         <li class="nav-item">
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
@@ -36,7 +42,6 @@
                             </form>
                         </li>
                     @else
-                        <!-- If user is a guest, show login and register links -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">Login</a>
                         </li>
