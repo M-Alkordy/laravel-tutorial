@@ -17,12 +17,8 @@
                             <p class="card-text">{{ $post->content }}</p>
                             <div class="mt-2">
                                 <a href="{{ route('posts.show', $post->id) }}" class="btn btn-primary btn-sm">View</a>
-                                @if (auth()->check() &&
-                                        auth()->user()->can('update', $post))
+                                @can('manage posts')
                                     <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                @endif
-                                @if (auth()->check() &&
-                                        auth()->user()->can('delete', $post))
                                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
                                         style="display:inline">
                                         @csrf
@@ -30,7 +26,7 @@
                                         <button type="submit" class="btn btn-danger btn-sm"
                                             onclick="return confirm('Are you sure you want to delete this post?')">Delete</button>
                                     </form>
-                                @endif
+                                @endcan
                             </div>
                         </div>
                     </div>
