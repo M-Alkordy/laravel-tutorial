@@ -12,7 +12,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Post::class);
+
 
         $posts = Post::all();
 
@@ -24,8 +24,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //add auth to create
-        $this->authorize('create', Post::class);
+
 
         return view('posts.create');
     }
@@ -62,7 +61,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $this->authorize('view', $post);
+
         return view('posts.show', compact('post'));
     }
 
@@ -71,7 +70,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        $this->authorize('update', $post);
+
 
         return view('posts.edit', compact('post'));
     }
@@ -107,8 +106,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        $this->authorize('delete', $post);
-
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully');

@@ -22,15 +22,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('posts.index') }}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('posts.create') }}">Create Post</a>
-                    </li>
+                    @can('manage posts')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('posts.create') }}">Create Post</a>
+                        </li>
+                    @endcan
                     @auth
-                        @can('manageUsers', App\Models\User::class)
+                        @if (auth()->user()->hasRole('admin'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.users.index') }}">Manage Users</a>
+                                <a class="nav-link" href="{{ route('admin.index') }}">Manage Roles And Users</a>
                             </li>
-                        @endcan
+                        @endif
                     @endauth
                 </ul>
                 <ul class="navbar-nav ml-auto">
@@ -55,6 +57,16 @@
     </header>
 
     <main class="container mt-4">
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         @yield('content')
     </main>
 

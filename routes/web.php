@@ -19,28 +19,29 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/', [TaskController::class, 'index']);
 
+Route::group(['middleware' => ['auth']], function () {
 
-Route::middleware(['auth'])->group(function () {
+    Route::group(['middleware' => ['role:admin']], function () {
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/admin/roles', [AdminController::class, 'createRole'])->name('admin.createRole');
+        Route::post('/admin/users/{user}/assign-role', [AdminController::class, 'assignRole'])->name('admin.assignRole');
+        Route::delete('/admin/roles/{role}', [AdminController::class, 'deleteRole'])->name('admin.deleteRole');
+        Route::post('/admin/roles/{role}/assign-permission', [AdminController::class, 'assignPermissionToRole'])->name('admin.assignPermissionToRole');
+        Route::post('/admin/roles/{role}/remove-permission', [AdminController::class, 'removePermissionFromRole'])->name('admin.removePermissionFromRole');
+        Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
+        Route::resource('posts', PostController::class)->except(['index', 'show']);
+    });
+    Route::group(['middleware' => ['permission:manage posts']], function () {
+        Route::resource('posts', PostController::class)->except(['index', 'show']);
+    });
 
-    Route::get('', [PostController::class, 'index'])->name('posts.index');
 
+    Route::get('/', [PostController::class, 'index'])->name('posts.index');
     Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
-
-    Route::get('post/create', [PostController::class, 'create'])->name('posts.create');
-    Route::post('posts', [PostController::class, 'store'])->name('posts.store');
-
-    Route::get('posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
-    Route::put('posts/{post}', [PostController::class, 'update'])->name('posts.update');
-
-    Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-
-    Route::get('/admin/users', [AdminController::class, 'index'])->name('admin.users.index');
-    Route::delete('/admin/users/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
-
-
 
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
+
 
 
 Route::middleware(['guest'])->group(function () {
